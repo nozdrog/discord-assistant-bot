@@ -73,6 +73,8 @@ async def on_message(message):
     if message.author.bot:
         return
 
+    thread = openai.beta.threads.create()
+
     # Handle Excel file uploads
     if message.attachments:
         for attachment in message.attachments:
@@ -82,7 +84,6 @@ async def on_message(message):
 
     user_input = message.content
 
-    thread = openai.beta.threads.create()
     openai.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
