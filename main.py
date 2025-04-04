@@ -45,7 +45,7 @@ async def handle_excel_file(attachment, message, thread_id):
         await message.channel.send(f"❌ Failed to upload to OpenAI: {str(e)}")
         return
 
-    # Send to Assistant
+    # Send message to Assistant
     openai.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
@@ -55,9 +55,14 @@ async def handle_excel_file(attachment, message, thread_id):
             "Then remove duplicate values in the 'ERP ID(Zakaznik)' column. "
             "Finally, count the number of dates in the column 'Datum Prvniho Filingu(zakaznik)' "
             "that fall between 24.3.2025 and 30.3.2025. "
-            "Return all results in a clear, human-readable format."
-        ),
-        file_ids=[file_id]
+            "Use the uploaded Excel file."
+        )
+    )
+
+    # Attach the file to the thread
+    openai.beta.threads.files.attach(
+        thread_id=thread_id,
+        file_id=file_id
     )
 
     await message.channel.send("📊 File uploaded and sent to Assistant. Processing...")
