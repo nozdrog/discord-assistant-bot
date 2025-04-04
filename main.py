@@ -59,10 +59,11 @@ async def handle_excel_file(attachment, message, thread_id):
         )
     )
 
-    # Attach the file to the thread
-    openai.beta.threads.files.attach(
+    # Create the run and attach the file
+    run = openai.beta.threads.runs.create(
         thread_id=thread_id,
-        file_id=file_id
+        assistant_id=assistant_id,
+        file_ids=[file_id]
     )
 
     await message.channel.send("📊 File uploaded and sent to Assistant. Processing...")
