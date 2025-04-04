@@ -49,7 +49,14 @@ async def handle_excel_file(attachment, message, thread_id):
     openai.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
-        content="Here's my weekly Excel report. Please analyze and summarize it.",
+        content=(
+            "This file contains an Excel dataset. "
+            "Please filter the column 'opportunity_lead_handler(zakaznik)' to only include rows with 'Everest'. "
+            "Then remove duplicate values in the 'ERP ID(Zakaznik)' column. "
+            "Finally, count the number of dates in the column 'Datum Prvniho Filingu(zakaznik)' "
+            "that fall between 24.3.2025 and 30.3.2025. "
+            "Return all results in a clear, human-readable format."
+        ),
         file_ids=[file_id]
     )
 
@@ -65,6 +72,13 @@ async def on_ready():
 async def on_message(message):
     if message.author.bot:
         return
+
+    # Handle Excel file uploads
+    if message.attachments:
+        for attachment in message.attachments:
+            if attachment.filename.endswith(".xlsx"):
+                await handle_excel_file(attachment, message, thread.id)
+                return
 
     user_input = message.content
 
